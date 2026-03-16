@@ -8,7 +8,13 @@ async function main() {
   .split(/\r?\n/)
   .map(v => v.trim());
   
-  const driver = await new Builder().forBrowser(Browser.CHROME).build();
+  const options = new chrome.Options();
+
+  options.addArguments("--headless=new");
+  options.addArguments("--window-size=1920,1080");
+  options.addArguments("--disable-gpu");
+  options.addArguments("--no-sandbox");
+  const driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build();
   
   try {
     
