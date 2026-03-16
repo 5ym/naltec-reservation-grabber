@@ -1,0 +1,9 @@
+{
+  "name": "naltec-reservation-grabber",
+  "module": "index.js",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "selenium-webdriver": "^4.41.0"
+  }
+}
