@@ -35,7 +35,7 @@ async function main() {
     await driver.findElement(By.id("insp_vehicle_class_1")).click();
     await driver.findElement(By.css('button[type="submit"]')).click();
     
-    await driver.findElement(By.css('button[data-topagename="A1101_03"]')).click();
+    await driver.findElement(By.css('button[value="Forward:A1101_03,office=41"]')).click();
     
     const specified = await driver.findElements(
       By.xpath("//tr[th[contains(text(),'3月23日')]]/td[1]//button")
