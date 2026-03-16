@@ -1,4 +1,5 @@
 const fs = require("fs");
+const chrome = require("selenium-webdriver/chrome");
 const { Builder, Browser, By, until } = require("selenium-webdriver");
 
 async function main() {
