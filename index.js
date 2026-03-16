@@ -58,10 +58,11 @@ async function main() {
     await driver.findElement(By.css('button[data-topagename="A1101_05"]')).click();
     await driver.findElement(By.css('button[data-topagename="A1101_06"]')).click();
     
+  } catch (error) {
+    console.error(error);
   } finally {
     await driver.quit();
   }
-  
 };
 main();
 setInterval(main, 60 * 1000);
