@@ -26,9 +26,9 @@ async function main() {
   options.addArguments("--window-size=1920,1080");
   options.addArguments("--disable-gpu");
   options.addArguments("--no-sandbox");
+  const driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build();
   
   try {
-    const driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build();
     console.log("実行:", new Date());
     // ログイン
     await driver.get("https://www.reserve.naltec.go.jp/web/ap-entry?slinky___page=forward:slinkyLogin");
