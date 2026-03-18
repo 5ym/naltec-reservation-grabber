@@ -100,7 +100,21 @@ async function main() {
       const afterRound = await driver.findElement(By.xpath(
         '//th[normalize-space(.)="ラウンド"]/following-sibling::td'
       )).getText();
-      if (examDate === afterExamDate && round === afterRound) {
+      // 希望日が選択できたが、既存の予約と同一だったら終了する
+      const isSame = examDate === afterExamDate && round === afterRound;
+      const currentDate = new Date(examDate);
+      const afterDate = new Date(afterExamDate);
+      const currentRound = parseInt(round.replace(/\D/g, ""));
+      const afterRoundNum = parseInt(afterRound.replace(/\D/g, ""));
+      const isOlder =
+        currentDate < afterDate ||
+        (examDate === afterExamDate && currentRound < afterRoundNum);
+      if (specified.length && isSame) {
+        console.log("希望日で予約が取得済みです");
+        await driver.quit();
+        process.exit(0);
+      }
+      if (!specified.length && (isSame || isOlder)) {
         return;
       }
     } else {
@@ -142,6 +156,13 @@ async function main() {
       until.elementLocated(By.xpath('//span[contains(text(),"予約番号")]')),
       10000
     );
+
+    // 最後に希望日で予約が取れていれば定期実行を終了する
+    if (specified.length) {
+      console.log("希望日で予約が取れました！");
+      await driver.quit();
+      process.exit(0);
+    }
   } catch (error) {
     console.error(error);
   } finally {
