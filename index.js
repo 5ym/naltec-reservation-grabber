@@ -107,8 +107,8 @@ async function main() {
       const currentRound = parseInt(round.replace(/\D/g, ""));
       const afterRoundNum = parseInt(afterRound.replace(/\D/g, ""));
       const isOlder = 
-        currentDate > afterDate ||
-        (examDate === afterExamDate && currentRound > afterRoundNum);
+        currentDate < afterDate ||
+        (examDate === afterExamDate && currentRound < afterRoundNum);
       if (specified.length && isSame) {
         console.log("希望日で予約が取得済みです");
         await driver.quit();
