@@ -2,6 +2,15 @@ const fs = require("fs");
 const chrome = require("selenium-webdriver/chrome");
 const { Builder, Browser, By, until } = require("selenium-webdriver");
 
+const convertToDateObj = (dateStr) => {
+  const match = dateStr.match(/(\d{4})年\s*(\d{1,2})月(\d{1,2})日/);
+
+  const [_, year, month, day] = match;
+  const date = new Date(year, month - 1, day);
+
+  return date
+}
+
 async function main() {
   // 事務所番号42:袖ヶ浦
   const locationNumber = '41'
@@ -102,8 +111,8 @@ async function main() {
       )).getText();
       // 希望日が選択できたが、既存の予約と同一だったら終了する
       const isSame = examDate === afterExamDate && round === afterRound;
-      const currentDate = new Date(examDate);
-      const afterDate = new Date(afterExamDate);
+      const currentDate = convertToDateObj(examDate);
+      const afterDate = convertToDateObj(afterExamDate);
       const currentRound = parseInt(round.replace(/\D/g, ""));
       const afterRoundNum = parseInt(afterRound.replace(/\D/g, ""));
       const isOlder = 
