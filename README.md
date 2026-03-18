@@ -1,15 +1,32 @@
 # naltec-reservation-grabber
 
-To install dependencies:
+検査レーンの予約において一部事業者が不当に予約を寡占状態にありそれに対抗するためのものです。  
+あくまでも個人使用の範囲にとどめてください。  
+このツールを利用して出たいかなる損害も当方では責任を負いかねます。  
 
-```bash
-bun install
+## 使い方
+
+parameter.txtに下記の通り情報を入れる。
+
+```txt
+メールアドレス
+パスワード
+予約をした車両の車体番号
 ```
 
-To run:
+index.js内の一部パラメーターを適宜書き換える
 
-```bash
+- locationNumber -> 予約画面において表示されるnaltec事務所のボタン要素の番号を入れてください
+- insp_type_4 -> 検査種別上から順番に1-4
+- insp_vehicle_class_1 -> 車両タイプ上から順番に1-3
+- 3月30日 -> 予約したい日付に書き換える
+- td[1] -> 予約したいラウンド数
+
+希望日で予約が取れなかった場合一番遠い日付け、ラウンド数で予約を確保します。その後も希望日で取れるまで実行を続けます。
+
+最後に実行方法bun以外でも可
+
+```shell
+bun install
 bun run index.js
 ```
-
-This project was created using `bun init` in bun v1.3.9. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
