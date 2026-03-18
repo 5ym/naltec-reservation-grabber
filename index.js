@@ -65,7 +65,7 @@ async function main() {
 
     // 種別画面
     const inspectionType = await driver.wait(
-      until.elementLocated(By.id("insp_type_4")), // 1継続,4構変
+      until.elementLocated(By.id("insp_type_5")), // 1継続,5構変
       10000
     );
     inspectionType.click();
