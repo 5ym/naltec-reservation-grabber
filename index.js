@@ -22,10 +22,13 @@ async function main() {
   
   const options = new chrome.Options();
 
-  options.addArguments("--headless=new");
-  options.addArguments("--window-size=1920,1080");
-  options.addArguments("--disable-gpu");
-  options.addArguments("--no-sandbox");
+  options.addArguments(
+    '--headless=new',
+    '--no-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-gpu',
+    '--window-size=1920,1080'
+  );
   const driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build();
   
   try {
