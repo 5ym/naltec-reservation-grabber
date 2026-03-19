@@ -3,7 +3,7 @@ const chrome = require("selenium-webdriver/chrome");
 const { Builder, Browser, By, until } = require("selenium-webdriver");
 
 const convertToDateObj = (dateStr) => {
-  const match = dateStr.match(/(\d{4})年\s*(\d{1,2})月(\d{1,2})日/);
+  const match = dateStr.match(/(\d{4})年[\s　]*(\d{1,2})月[\s　]*(\d{1,2})日/);
 
   const [_, year, month, day] = match;
   const date = new Date(year, month - 1, day);
@@ -179,6 +179,7 @@ async function main() {
     console.error(error);
   } finally {
     await driver.quit();
+    console.log("終了:", new Date());
   }
 };
 main();
