@@ -29,9 +29,10 @@ async function main() {
     '--disable-gpu',
     '--window-size=1920,1080'
   );
-  const driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build();
+  let driver;
   
   try {
+    driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build();
     console.log("実行:", new Date());
     // ログイン
     await driver.get("https://www.reserve.naltec.go.jp/web/ap-entry?slinky___page=forward:slinkyLogin");
