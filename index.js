@@ -179,7 +179,7 @@ async function main() {
   } catch (error) {
     console.error(error);
   } finally {
-    await driver.quit();
+    await driver?.quit();
     console.log("終了:", new Date());
   }
 };
