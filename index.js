@@ -52,8 +52,9 @@ async function main() {
     const reservedButton = await driver.findElements(
       By.xpath(`//tr[td[5][contains(text(),"${chassis}")]]//button`)
     );
+    const hasReservation = reservedButton.length > 0;
     let examDate, round;
-    if (reservedButton.length) {
+    if (hasReservation) {
       await reservedButton[0].click();
       const chnageButton = await driver.wait(
         until.elementLocated(By.css('button[value="Forward:A1131_01"]')),
@@ -116,7 +117,7 @@ async function main() {
     }
     
     // 予約変更の場合次のボタンが表示されるまでまつ、予約の場合は車両情報入力画面が出るのを待つ
-    if (reservedButton.length) {
+    if (hasReservation) {
       await driver.wait(
         until.elementLocated(By.css('button[value^="Forward"]')),
         10000
