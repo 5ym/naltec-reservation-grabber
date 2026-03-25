@@ -14,6 +14,9 @@ const convertToDateObj = (dateStr) => {
 async function main() {
   // 事務所番号42:袖ヶ浦
   const locationNumber = '41'
+  const nowDate = new Date();
+  const specifiedDate = new Date(nowDate.getFullYear(), 3 - 1, 30);
+  const specifiedRound = 1
   
   const [id, password, chassis] = fs
   .readFileSync("parameter.txt","utf8")
@@ -59,9 +62,16 @@ async function main() {
       examDate = await driver.findElement(By.xpath(
         '//th[normalize-space(.)="受検日"]/following-sibling::td'
       )).getText();
+      examDate = convertToDateObj(examDate);
       round = await driver.findElement(By.xpath(
         '//th[normalize-space(.)="ラウンド"]/following-sibling::td'
       )).getText();
+      round = parseInt(round.replace(/\D/g, ""));
+      if (examDate.getTime() === specifiedDate.getTime() && round === specifiedRound) {
+        console.log("希望日で予約が取得済みです");
+        await driver.quit();
+        process.exit(0);
+      }
       chnageButton.click();
     } else {
       reserveButton.click();
@@ -69,7 +79,7 @@ async function main() {
 
     // 種別画面
     const inspectionType = await driver.wait(
-      until.elementLocated(By.id("insp_type_5")), // 1継続,5構変
+      until.elementLocated(By.id("insp_type_2")), // 1継続,5構変
       10000
     );
     inspectionType.click();
@@ -89,16 +99,20 @@ async function main() {
       10000
     );
     const specified = await driver.findElements(
-      By.xpath("//tr[th[contains(text(),'3月30日')]]/td[1]//button")
+      By.xpath(`//tr[th[contains(text(),'${specifiedDate.getMonth() + 1}月${specifiedDate.getDate()}日')]]/td[${specifiedRound}]//button`)
     );
     if (specified.length) {
       await specified[0].click();
     } else {
-      const available = await driver.findElements(
-        By.css('button[value^="Forward"]')
+      // 希望のラウンドが取れない場合、同じ日の他のラウンドが取れないか確認する
+      const sameDateButtons = await driver.findElements(
+        By.xpath(`//tr[th[contains(text(),'${specifiedDate.getMonth() + 1}月${specifiedDate.getDate()}日')]]//button`)
       );
-      if (!available.length) return;
-      await available.at(-1).click();
+      if (sameDateButtons.length) {
+        await sameDateButtons[0].click();
+      } else {
+        return;
+      }
     }
     
     // 予約変更の場合次のボタンが表示されるまでまつ、予約の場合は車両情報入力画面が出るのを待つ
@@ -114,19 +128,11 @@ async function main() {
         '//th[normalize-space(.)="ラウンド"]/following-sibling::td'
       )).getText();
       // 希望日が選択できたが、既存の予約と同一だったら終了する
-      const isSame = examDate === afterExamDate && round === afterRound;
-      const currentDate = convertToDateObj(examDate);
       const afterDate = convertToDateObj(afterExamDate);
-      const currentRound = parseInt(round.replace(/\D/g, ""));
       const afterRoundNum = parseInt(afterRound.replace(/\D/g, ""));
-      const isOlder = 
-        currentDate > afterDate ||
-        (examDate === afterExamDate && currentRound > afterRoundNum);
-      if (specified.length && isSame) {
-        console.log("希望日で予約が取得済みです");
-        await driver.quit();
-        process.exit(0);
-      }
+      const isSame = examDate.getTime() === afterDate.getTime() && round === afterRoundNum;
+      const isOlder = round < afterRoundNum
+      // 以前の予約と同じもしくは先のラウンドだったらスキップ
       if (!specified.length && (isSame || isOlder)) {
         return;
       }
