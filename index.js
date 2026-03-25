@@ -56,7 +56,7 @@ async function main() {
     let examDate, round;
     if (hasReservation) {
       await reservedButton[0].click();
-      const chnageButton = await driver.wait(
+      const changeButton = await driver.wait(
         until.elementLocated(By.css('button[value="Forward:A1131_01"]')),
         10000
       )
@@ -73,7 +73,7 @@ async function main() {
         await driver.quit();
         process.exit(0);
       }
-      chnageButton.click();
+      changeButton.click();
     } else {
       reserveButton.click();
     }
