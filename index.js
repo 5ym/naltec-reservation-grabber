@@ -12,16 +12,16 @@ const convertToDateObj = (dateStr) => {
 }
 
 async function main() {
+  const [id, password, chassis, month, day, inspTypeNumber] = fs
+    .readFileSync("parameter.txt","utf8")
+    .split(/\r?\n/)
+    .map(v => v.trim());
+  
   // 事務所番号42:袖ヶ浦
   const locationNumber = '41'
   const nowDate = new Date();
-  const specifiedDate = new Date(nowDate.getFullYear(), 3 - 1, 30);
+  const specifiedDate = new Date(nowDate.getFullYear(), month - 1, day);
   const specifiedRound = 1
-  
-  const [id, password, chassis] = fs
-  .readFileSync("parameter.txt","utf8")
-  .split(/\r?\n/)
-  .map(v => v.trim());
   
   const options = new chrome.Options();
 
@@ -80,7 +80,7 @@ async function main() {
 
     // 種別画面
     const inspectionType = await driver.wait(
-      until.elementLocated(By.id("insp_type_2")), // 1継続,5構変
+      until.elementLocated(By.id(`insp_type_${inspTypeNumber}`)),
       10000
     );
     inspectionType.click();
