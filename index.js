@@ -1,4 +1,6 @@
 const fs = require("fs");
+const os = require('os');
+const path = require('path');
 const chrome = require("selenium-webdriver/chrome");
 const { Builder, Browser, By, until } = require("selenium-webdriver");
 
@@ -23,14 +25,17 @@ async function main() {
   const specifiedDate = new Date(nowDate.getFullYear(), month - 1, day);
   const specifiedRound = 1
   
-  const options = new chrome.Options();
+  // 一時ディレクトリ作成
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chrome-'));
 
+  const options = new chrome.Options();
   options.addArguments(
     '--headless=new',
     '--no-sandbox',
     '--disable-dev-shm-usage',
     '--disable-gpu',
-    '--window-size=1920,1080'
+    '--window-size=1920,1080',
+    `--user-data-dir=${tmpDir}`
   );
   let driver;
   
@@ -71,6 +76,7 @@ async function main() {
       if (examDate.getTime() === specifiedDate.getTime() && round === specifiedRound) {
         console.log("希望日で予約が取得済みです");
         await driver.quit();
+        fs.rmSync(tmpDir, { recursive: true, force: true });
         process.exit(0);
       }
       changeButton.click();
@@ -181,12 +187,14 @@ async function main() {
     if (specified.length) {
       console.log("希望日で予約が取れました！");
       await driver.quit();
+      fs.rmSync(tmpDir, { recursive: true, force: true });
       process.exit(0);
     }
   } catch (error) {
     console.error(error);
   } finally {
     await driver?.quit();
+    fs.rmSync(tmpDir, { recursive: true, force: true });
     console.log("終了:", new Date());
   }
 };
