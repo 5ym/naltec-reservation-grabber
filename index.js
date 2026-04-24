@@ -13,6 +13,8 @@ const convertToDateObj = (dateStr) => {
   return date
 }
 
+let shouldStop = false;
+
 async function main() {
   const [id, password, chassis, month, day, inspTypeNumber] = fs
     .readFileSync("parameter.txt","utf8")
@@ -75,9 +77,8 @@ async function main() {
       round = parseInt(round.replace(/\D/g, ""));
       if (examDate.getTime() === specifiedDate.getTime() && round === specifiedRound) {
         console.log("希望日で予約が取得済みです");
-        await driver.quit();
-        fs.rmSync(tmpDir, { recursive: true, force: true });
-        process.exit(0);
+        shouldStop = true;
+        return;
       }
       changeButton.click();
     } else {
@@ -186,17 +187,27 @@ async function main() {
     // 最後に希望日で予約が取れていれば定期実行を終了する
     if (specified.length) {
       console.log("希望日で予約が取れました！");
-      await driver.quit();
-      fs.rmSync(tmpDir, { recursive: true, force: true });
-      process.exit(0);
+      shouldStop = true;
     }
   } catch (error) {
     console.error(error);
   } finally {
-    await driver?.quit();
+    await driver?.quit().catch(() => {});;
     fs.rmSync(tmpDir, { recursive: true, force: true });
     console.log("終了:", new Date());
   }
 };
-main();
-setInterval(main, 30 * 1000);
+
+async function loop() {
+  while (!shouldStop) {
+    await main();
+    if (shouldStop) break;
+
+    await new Promise(r => setTimeout(r, 30000));
+  }
+
+  console.log("ループ終了");
+  process.exit(0); // ←ここで初めて使う
+}
+
+loop();
