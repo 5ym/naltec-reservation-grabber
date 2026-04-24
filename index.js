@@ -13,14 +13,13 @@ const convertToDateObj = (dateStr) => {
   return date
 }
 
+const [id, password, chassis, month, day, inspTypeNumber] = fs
+  .readFileSync("parameter.txt","utf8")
+  .split(/\r?\n/)
+  .map(v => v.trim());
 let shouldStop = false;
 
 async function main() {
-  const [id, password, chassis, month, day, inspTypeNumber] = fs
-    .readFileSync("parameter.txt","utf8")
-    .split(/\r?\n/)
-    .map(v => v.trim());
-  
   // 事務所番号42:袖ヶ浦
   const locationNumber = '41'
   const nowDate = new Date();
