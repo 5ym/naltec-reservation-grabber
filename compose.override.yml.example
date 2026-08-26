@@ -1,0 +1,25 @@
+# このファイルを compose.override.yml にコピーして値を書き換える。
+# compose.override.yml は docker compose が自動で読み込む (git 管理外)。
+services:
+  grabber:
+    environment:
+      # メールアドレス
+      NALTEC_ID: "user@example.com"
+      # パスワード
+      NALTEC_PASSWORD: "password"
+      # 予約をした車両の車体番号
+      CHASSIS_NO: "ABC123-4567890"
+      # 予約したい月
+      TARGET_MONTH: "9"
+      # 予約したい日
+      TARGET_DAY: "15"
+      # 検査種別 1:継続検査 2:中古新規 3:新車新規 4:その他新規 5:構造変更
+      INSP_TYPE: "1"
+      # 予約画面において表示されるnaltec事務所のボタン要素の番号 (例 42:袖ヶ浦)
+      LOCATION_NUMBER: "41"
+      # 予約したいラウンド数
+      ROUND: "1"
+      # 車両タイプ 1:普通車 2:中型大型 3:大型特殊
+      VEHICLE_CLASS: "1"
+      # 再試行間隔 (秒)
+      INTERVAL_SECONDS: "30"

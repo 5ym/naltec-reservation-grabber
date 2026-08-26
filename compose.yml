@@ -1,0 +1,8 @@
+services:
+  grabber:
+    build: .
+    init: true
+    shm_size: 1gb
+    restart: "no"
+    # 予約パラメーターは compose.override.yml で指定する
+    # (compose.override.yml.example をコピーして作成)
